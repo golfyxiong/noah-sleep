@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Semacare Sleep Report</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body>
+    <div class="page">
+
+        <div id="file-input-wrapper">
+            <input type="file" id="cpc-file-input" placeholder="CPC文件" />
+            <input type="file" id="rr-file-input" placeholder="RR文件" />
+            <input type="text" id="phone-input" placeholder="手机号" />
+            <input type="text" id="starttime-input" placeholder="开始时间" />
+            <button type="button" onclick="startCreatePDF()">开始</button>
+        </div>
+        
+        <p>&nbsp;</p>
+
+        <div class="title">
+            
+                <img class="logo" src="./logo.png">
+                <p class="text"><h2>&#12288旭宏医疗<br/>睡眠监测报告</h2></p>
+
+
+        </div>
+
+        <p>&nbsp;</p>
+
+        <div>
+            <h3>基本信息</h3>
+            <hr>
+            <table id="baseinfor">
+                <tr>
+                    <td>姓名：</td><td id="idname">陈小马</td><td>性别：</td><td id="idgender">男</td><td>年龄：</td><td id="idage">27岁</td>
+                </tr>
+                <tr>
+                    <td>身高：</td><td id="idheight">173cm</td><td>体重：</td><td id="idweight">55kg</td><td>BMI：</td><td id="idbmi">24</td>
+                </tr>
+            </table>
+        </div>
+
+        <p>&nbsp;</p>
+
+        <div>
+            <h3>ECG采集信息</h3>
+            <hr>
+            <table>
+                <tr><td>数据记录收集时间：</td><td id="sleep_time">9小时00分</td><td>&#12288&#12288</td><td id="sleep_time_range"></td></tr>
+                <tr><td>在床总时间（TIB）：</td><td id="on_bed_time">9小时00分</td><td>&#12288&#12288</td><td id="on_bed_time_range"></td></tr>
+            </table>
+        </div>
+
+        <p>&nbsp;</p>
+
+        <div>
+            <h3>睡眠监测结果</h3>
+            <hr>
+            <table class="sleepresult_table" border="1" cellspacing="0">
+                <tr><th>指标</th><th>记录值</th><th>参考值</th></tr>
+                <tr><td>睡眠总时间(TST)</td><td id="sleep_total_time"></td><td>7.0-8.0小时</td></tr>
+                <tr><td>入睡潜伏期</td><td id="pre_sleep_time"></td><td>≤30分钟</td></tr>
+                <tr><td>睡眠期间觉醒次数</td><td id="wake_count"></td><td>≤10次</td></tr>
+                <tr><td>睡眠呼吸暂停指数</td><td id="sleep_ahi1"></td><td>＜5（次/小时）</td></tr>
+                <tr><td>睡眠效率（TST/TIB*100%）</td><td id="sleep_efficiency"></td><td>≥90%</td></tr>
+            </table>
+        </div>
+
+        <p>&nbsp;</p>
+
+        <div>
+            <h3>睡眠整体评价</h3>
+            <hr>
+            <div class="sleep_global">
+                <p>睡眠效率参考值（TST/TIB×100%）：</p>
+                <table id="sleepglobal_table">
+                    <tr><td></td><td>优</td><td>良好</td><td>一般</td><td>差</td></tr>
+                    <tr><td>占比</td><td>>85%</td><td>75-85%</td><td>65-75%</td><td><65%</td></tr>
+                </table>
+                <h2>您的睡眠占比：<span id="sleep_efficiency_scale">90% 优</span></h2>
+                <p>结合您的AHI指数为<span id="sleep_ahi2">15.24</span>，其中，阻塞型（OSAHS）占<span id="sleep_ahi_osahs">100%</span>，中枢型（CAAS）占<span id="sleep_ahi_caas">0%</span>，<span id="sleep_result">您疑似患有中度-阻塞型睡眠呼吸暂停低通气综合征，请尽快就诊</span>。</p>
+                <p class="sleepglobal_text">提示：1.规律作息习惯，运动减重，避免酗酒及服用镇静安眠药物<br/>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<span id="sleep_result_detail">2.详情咨询专科医生，定期随访复查</span></p>
+            </div>
+        </div>
+
+        <p>&nbsp;</p>
+
+        <div>
+            <h3>睡眠分期</h3>
+            <hr>
+            <div>
+                <table border="1" cellspacing="0">
+                    <tr><th>睡眠阶段</th><th>时间</th><th>占睡眠时间（%）</th></tr>
+                    <tr><td>清醒时间</td><td id="wake_time"></td><td id="wake_time_scale"></td></tr>
+                    <tr><td>快速眼动睡眠</td><td id="rem_sleep_time"></td><td id="rem_sleep_time_scale"></td></tr>
+                    <tr><td>浅睡眠</td><td id="light_sleep_time"></td><td id="light_sleep_time_scale"></td></tr>
+                    <tr><td>深度睡眠</td><td id="deep_sleep_time"></td><td id="deep_sleep_time_scale"></td></tr>
+                </table>
+            </div>
+            <p>&nbsp;</p>
+            <div id="chart-container"></div>
+    
+
+
+            
+        </div>
+
+        <p>&nbsp;</p>
+
+        <div>
+            <h3>呼吸事件统计</h3>
+            <hr>
+        <div>
+            <table border="1" cellspacing="0">
+                <tr>
+                    <th>类型</th>
+                    <th>次数</th>
+                    <!-- <th>平均时间（秒）</th>
+                    <th>最长时间（秒）</th> -->
+                    <!-- <th>占睡眠时间（%）</th> -->
+                    <th>指数（次/时）</th>
+                    <th>范围（次/时）</th>
+                </tr>
+                <tr>
+                    <td>阻塞型</td><td id="obstructive_apnea_count"></td>
+                    <!-- <td id="obstructive_apnea_mean_time"></td>
+                    <td id="obstructive_apnea_max_time"></td> -->
+                    <!-- <td id="obstructive_apnea_scale"></td> -->
+                    <td id="obstructive_apnea_index"></td>
+                    <td>＜5</td>
+                </tr>
+                <tr>
+                    <td>中枢型</td>
+                    <td id="central_apnea_count"></td>
+                    <!-- <td id="central_apnea_mean_time"></td>
+                    <td id="central_apnea_max_time"></td> -->
+                    <!-- <td id="central_apnea_scale"></td> -->
+                    <td id="central_apnea_index"></td>
+                    <td>＜5</td>
+                </tr>
+                <tr>
+                    <td>混合型</td>
+                    <td id="mixed_apnea_count"></td>
+                    <!-- <td id="mixed_apnea_mean_time"></td>
+                    <td id="mixed_apnea_max_time"></td> -->
+                    <!-- <td id="mixed_apnea_scale"></td> -->
+                    <td id="mixed_apnea_index"></td>
+                    <td>＜5</td>
+                </tr>
+                <tr>
+                    <td>呼吸暂停</td>
+                    <td id="apnea_count"></td>
+                    <!-- <td id="apnea_mean_time"></td>
+                    <td id="apnea_max_time"></td> -->
+                    <!-- <td id="apnea_scale"></td> -->
+                    <td id="apnea_index"></td>
+                    <td>＜5</td>
+                </tr>
+            </table>
+        </div>
+            <p>&nbsp;</p>
+            <p>&nbsp;</p>
+            
+            <div id="chart-container2"></div>
+            
+        </div>
+
+        <div>
+            <h3>心率统计</h3>
+            <hr>
+            <div>
+                <table border="1"  cellspacing="0">
+                    <tr><th>平均心率</th><td id="mean_hr"></td></tr>
+                    <tr><th>最高心率</th><td id="max_hr"></td></tr>
+                    <tr><th>最低心率</th><td id="min_hr"></td></tr>
+                </table>
+            </div>
+            <p>HR</p>
+            <div id="chart-container3"></div>
+            
+        </div>
+
+    </div>
+    <script src="https://cdn.staticfile.org/jquery/3.6.3/jquery.min.js"></script>
+    <script src="./echarts.js"></script>
+    <script src="./index.js"></script>
+</body>
+
+</html>
